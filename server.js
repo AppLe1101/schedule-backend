@@ -6,7 +6,9 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const groupRoutes = require("./routes/groups");
 
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const app = express();
 const PORT = process.env.PORT || 5000;
 const mongoConnection = process.env.MONGO_CONNECTION;
