@@ -96,4 +96,30 @@ router.put(
   }
 );
 
+// POST /api/groups - создание новой группы (доступно только директору)
+router.post(
+  "/groups",
+  verifyJWT,
+  authorizeRoles(["director"]),
+  async (req, res) => {
+    try {
+      const { name, schedule } = req.body;
+      if (!name) {
+        return res.status(400).json({ message: "Название группы обязательно" });
+      }
+
+      const newGroup = new Group({
+        name,
+        schedule: schedule || [],
+      });
+
+      await newGroup.save();
+      res.status(201).json(newGroup);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Ошибка сервера" });
+    }
+  }
+);
+
 module.exports = router;
