@@ -122,4 +122,22 @@ router.post(
   }
 );
 
+// DELETE /api/groups/:id - удаление группы (доступно только директору)
+
+router.delete(
+  "/groups/:id",
+  verifyJWT,
+  authorizeRoles(["director"]),
+  async (req, res) => {
+    try {
+      const group = await Group.findByIdAndDelete(req.params.id);
+      if (!group) return res.status(404).json({ message: "Группа не найдена" });
+      res.json({ message: "Группа удалена", group });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Ошибка сервера" });
+    }
+  }
+);
+
 module.exports = router;
